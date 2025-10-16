@@ -6186,6 +6186,7 @@ GameObject:
   - component: {fileID: 994971063}
   - component: {fileID: 994971065}
   - component: {fileID: 994971064}
+  - component: {fileID: 994971066}
   m_Layer: 0
   m_Name: player-idle-1
   m_TagString: Untagged
@@ -6285,6 +6286,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &994971066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 994971062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc6b258ee30574b5c84efa322a3141e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
+  jumpForce: 10
 --- !u!1 &995055734
 GameObject:
   m_ObjectHideFlags: 0
