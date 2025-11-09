@@ -4,15 +4,14 @@ public class CreatePlayerController : MonoBehaviour
 {
     [Header("이동 설정")]
     public float moveSpeed = 5.0f;
-    
+
     [Header("점프 설정")]
     public float jumpForce = 10.0f;
-    
+
     private Rigidbody2D rb;
     private bool isGrounded = false;
-    private int score = 0;  // 점수 추가
     private Vector3 startPosition;
-    
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -20,16 +19,16 @@ public class CreatePlayerController : MonoBehaviour
         startPosition = transform.position;
         Debug.Log("시작 위치 저장: " + startPosition);
     }
-    
+
     void Update()
     {
         // 좌우 이동
         float moveX = 0f;
         if (Input.GetKey(KeyCode.A)) moveX = -1f;
         if (Input.GetKey(KeyCode.D)) moveX = 1f;
-        
+
         rb.linearVelocity = new Vector2(moveX * moveSpeed, rb.linearVelocity.y);
-        
+
         // 점프 (지난 시간에 배운 내용)
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
@@ -48,14 +47,21 @@ public class CreatePlayerController : MonoBehaviour
         // 장애물 충돌 감지 - 새로 추가!
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            Debug.Log("⚠️ 장애물 충돌! 시작 지점으로 돌아갑니다.");
+            Debug.Log("⚠️ 장애물 충돌! 생명 -1");
 
-            // 시작 위치로 순간이동
+            // GameManager 찾아서 생명 감소
+            GameManager gameManager = FindObjectOfType<GameManager>();
+
+            if (gameManager != null)
+            {
+                gameManager.TakeDamage(1);  // 생명 1 감소
+            }
+
+            // 짧은 무적 시간 (0.5초 후 원래 위치로)
             transform.position = startPosition;
-
-            // 속도 초기화 (안 하면 계속 날아감)
-            rb.linearVelocity = new Vector2(0, 0);
+            rb.linearVelocity = Vector2.zero;
         }
+
     }
 
     void OnCollisionExit2D(Collision2D collision)
@@ -65,24 +71,28 @@ public class CreatePlayerController : MonoBehaviour
             isGrounded = false;
         }
     }
-    
+
     void OnTriggerEnter2D(Collider2D other)
     {
-        // 아이템 수집 감지 (Trigger)
+        // 코인 수집 (기존)
         if (other.CompareTag("Coin"))
         {
-            score++;  // 점수 증가
-            Debug.Log("코인 획득! 현재 점수: " + score);
-            Destroy(other.gameObject);  // 코인 제거
+            GameManager gameManager = FindObjectOfType<GameManager>();
+            if (gameManager != null)
+            {
+                gameManager.AddScore(10);
+            }
+            Destroy(other.gameObject);
         }
-        // 골 도달 
-        if (other. CompareTag("Goal"))
+        // 골 도달 - 새로 추가!
+        if (other.CompareTag("Goal"))
         {
-            Debug.Log("🎉🎉🎉 게임 클리어! 🎉🎉🎉");
-            Debug.Log("최종 점수: " + score + "점");
-        
-            // 캐릭터 조작 비활성화
-            enabled = false;
+            Debug.Log("🎉 Goal Reached!");
+            GameManager gameManager = FindObjectOfType<GameManager>();
+            if (gameManager != null)
+            {
+                gameManager.GameClear();  // 게임 클리어 함수 호출
+            }
         }
     }
 }
