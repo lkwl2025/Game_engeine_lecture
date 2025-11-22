@@ -50,4 +50,16 @@ public class EnemyPatrol : MonoBehaviour
             }
         }
     }
+    // EnemyPatrol.cs 또는 PlayerDetection.cs에 추가
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Health playerHealth = collision.gameObject.GetComponent<Health>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(1);
+            }
+        }
+    }
 }
